@@ -43,14 +43,24 @@ namespace ImageWriter.Classes
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task<string> WriteFile(IFormFile file)
+        public async Task<string> WriteFile(IFormFile file, string subPath = null)
         {
             string fileName;
             try
             {
                 var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
                 fileName = Guid.NewGuid().ToString() + extension; //Create a new Name for the file due to security reasons.
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", fileName);
+                string path = "";
+
+                if(subPath != null)
+                {
+                    path = HandlerPath($@"wwwroot\images\{subPath}", fileName);
+                    fileName = $@"{subPath}/{fileName}";
+                }
+                else
+                {
+                    path = HandlerPath($@"wwwroot\images", fileName);
+                }
 
                 using (var bits = new FileStream(path, FileMode.Create))
                 {
@@ -63,6 +73,36 @@ namespace ImageWriter.Classes
             }
 
             return fileName;
+        }
+
+        public async Task<string> UploadImage(IFormFile file, string rootPath)
+        {
+            var result = await WriteFile(file, rootPath);
+
+            return result;
+        }
+
+        private string HandlerPath(string path, string fileName)
+        {
+            try
+            {
+                string result = "";
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                    result = Path.Combine(Directory.GetCurrentDirectory(), path, fileName);
+                }
+                else
+                {
+                    result = Path.Combine(Directory.GetCurrentDirectory(), path, fileName);
+                }
+                Directory.CreateDirectory(path);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
     }
 }

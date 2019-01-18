@@ -30,5 +30,11 @@ namespace ImageUploadApi.Controllers
         {
             return await _imageHandler.UploadImage(file);
         }
+
+        [HttpPost("{subPath}")]
+        public async Task<IActionResult> UploadImage(IFormFile file, string subPath)
+        {
+            return await _imageHandler.UploadImage(file, subPath);
+        }
     }
 }

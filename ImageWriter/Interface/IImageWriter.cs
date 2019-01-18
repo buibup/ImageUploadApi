@@ -9,5 +9,6 @@ namespace ImageWriter.Interface
     public interface IImageWriter
     {
         Task<string> UploadImage(IFormFile file);
+        Task<string> UploadImage(IFormFile file, string subPath);
     }
 }

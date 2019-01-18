@@ -11,6 +11,7 @@ namespace ImageUploadApi.Handler
     public interface IImageHandler
     {
         Task<IActionResult> UploadImage(IFormFile file);
+        Task<IActionResult> UploadImage(IFormFile file, string subPath);
     }
 
     public class ImageHandler : IImageHandler
@@ -24,6 +25,12 @@ namespace ImageUploadApi.Handler
         public async Task<IActionResult> UploadImage(IFormFile file)
         {
             var result = await _imageWriter.UploadImage(file);
+            return new ObjectResult(result);
+        }
+
+        public async Task<IActionResult> UploadImage(IFormFile file, string subPath)
+        {
+            var result = await _imageWriter.UploadImage(file, subPath);
             return new ObjectResult(result);
         }
     }
